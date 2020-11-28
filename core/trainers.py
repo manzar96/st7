@@ -66,7 +66,7 @@ class BertTrainer:
 
             avg_val_loss = avg_val_loss / len(val_loader)
             if 'f1-score' in self.metrics:
-                metrics_dict['fi-score'] = np.mean(f1)
+                metrics_dict['f1-score'] = np.mean(f1)
             if 'accuracy' in self.metrics:
                 metrics_dict['accuracy'] = np.mean(f1)
             return avg_val_loss, metrics_dict
