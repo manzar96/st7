@@ -90,7 +90,7 @@ class BertTrainer:
         if not os.path.exists(self.checkpoint_dir):
             os.makedirs(self.checkpoint_dir)
         torch.save(self.model.state_dict(), os.path.join(
-            self.checkpoint_dir, '{}.pth'.format(epoch, 'model_checkpoint')))
+            self.checkpoint_dir, 'model_checkpoint.pth'))
 
         # we use the proposed method for saving EncoderDecoder model
         #self.model.save_pretrained(os.path.join(self.checkpoint_dir,
@@ -143,7 +143,7 @@ class BertTrainer:
                 cur_patience = 0
             else:
                 cur_patience += 1
-            self.print_epoch(epoch, avg_train_loss, avg_val_loss,
+            self.print_epoch(epoch, avg_train_loss, avg_val_loss, metrics_dict,
                              cur_patience, strt)
 
     def fit(self, train_loader, val_loader, epochs):
