@@ -57,13 +57,14 @@ class BertTrainer:
                     preds = torch.argmax(outputs, dim=1)
                     true = copy.deepcopy(targets)
                     import pdb;pdb.set_trace()
-                    f1.append(sklearn.metrics.f1_score(true.item().numpy(),
-                                                  preds.item().numpy()))
+                    f1.append(sklearn.metrics.f1_score(true.cpu().numpy(),
+                                                  preds.cpu().numpy()))
                 if 'accuracy' in self.metrics:
                     preds = torch.argmax(outputs, dim=1)
                     true = copy.deepcopy(targets)
-                    acc.append(sklearn.metrics.accuracy_score(true.item(
-                    ).numpy(), preds.item().numpy()))
+                    acc.append(sklearn.metrics.accuracy_score(true.cpu().numpy(
+
+                    ), preds.cpu().numpy()))
 
             avg_val_loss = avg_val_loss / len(val_loader)
             if 'f1-score' in self.metrics:
