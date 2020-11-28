@@ -26,6 +26,7 @@ class Task71aCollator(object):
                          padding_value=self.pad_indx)
                 .to(self.device))
 
+        is_humor = mktensor(is_humor, dtype=torch.long)
 
         return padded_inputs,inputs_pad_mask, is_humor
 
