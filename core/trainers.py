@@ -56,6 +56,7 @@ class BertTrainer:
                 if 'f1-score' in self.metrics:
                     preds = torch.argmax(outputs, dim=1)
                     true = copy.deepcopy(targets)
+                    import pdb;pdb.set_trace()
                     f1.append(sklearn.metrics.f1_score(true.item().numpy(),
                                                   preds.item().numpy()))
                 if 'accuracy' in self.metrics:
