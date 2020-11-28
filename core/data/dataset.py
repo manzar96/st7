@@ -36,7 +36,7 @@ class Task71Dataset(Dataset):
         data = []
         with open(self.csvfile) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
-            for index,line in enumerate(csv_reader):
+            for index, line in enumerate(csv_reader):
                 if index == 0:
                     continue
                 data.append(line)
@@ -54,7 +54,6 @@ class Task71Dataset(Dataset):
         myid, text, is_humor, humor_rating, humor_controversy, offense_rating\
             = \
             self.data[index]
-        import ipdb;ipdb.set_trace()
         if not self.transforms:
             text = self.tokenizer(text)
             text = mktensor(text['input_ids'], dtype=torch.long)
@@ -63,12 +62,11 @@ class Task71Dataset(Dataset):
                 text = t(text)
 
 
-        myid = mktensor(int(myid),dtype=torch.long)
-        is_humor = mktensor(int(is_humor),dtype=torch.long)
-        # humor_rating = mktensor(float(humor_rating))
-        # humor_controversy = mktensor(int(humor_controversy),dtype=torch.long)
-        # offense_rating = mktensor(float(offense_rating))
-        import ipdb;ipdb.set_trace()
+        myid = int(myid)
+        is_humor = int(is_humor)
+        # humor_rating = float(humor_rating)
+        # humor_controversy = int(humor_controversy)
+        # offense_rating = float(offense_rating)
         return myid, text, is_humor
 
 
