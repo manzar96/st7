@@ -66,7 +66,7 @@ optimizer = Adam(
     [p for p in model.parameters() if p.requires_grad],
     lr=options.lr, weight_decay=1e-6)
 criterion = nn.CrossEntropyLoss(ignore_index=-100)
-metrics = ['f1-score']
+metrics = ['f1-score','accuracy']
 import ipdb;ipdb.set_trace()
 
 # create trainer
