@@ -17,6 +17,7 @@ class BertClassificationHead(nn.Module):
         outputs = self.encoder(*args, **kwargs)
         pulled_output = outputs[1]
         out = self.clf(pulled_output)
-        out = self.act(out)
+        if self.act:
+            out = self.act(out)
         out = self.drop(out)
         return out

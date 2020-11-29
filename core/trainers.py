@@ -20,6 +20,8 @@ class BertTrainer:
                  optimizer,
                  patience,
                  criterion,
+                 checkpoint_with=None,
+                 checkpoint_max=False,
                  metrics=None,
                  scheduler=None,
                  checkpoint_dir=None,
@@ -35,6 +37,8 @@ class BertTrainer:
         self.patience = patience
         self.criterion = criterion
         self.metrics = metrics
+        self.checkpoint_with =checkpoint_with
+        self.checkpoint_max = checkpoint_max
 
 
     def calc_val_loss(self, val_loader):
@@ -114,8 +118,8 @@ class BertTrainer:
 
     def train_epochs(self, n_epochs, train_loader, val_loader):
 
-        best_val, cur_patience  = 10000, 0
-
+        best_val_max, cur_patience = 0, 0
+        best_val_min = 10000
         print("Training model....")
         self.model.train()
 
@@ -137,13 +141,24 @@ class BertTrainer:
                 self.optimizer.step()
             avg_train_loss = avg_train_loss / len(train_loader)
             avg_val_loss, metrics_dict = self.calc_val_loss(val_loader)
-            avg_val = metrics_dict['f1-score']
-            if avg_val > best_val:
-                self.save_epoch(epoch)
-                best_val = avg_val
-                cur_patience = 0
+            if self.checkpoint_with:
+                avg_val = metrics_dict[self.checkpoint_with]
             else:
-                cur_patience += 1
+                avg_val = avg_val_loss
+            if self.checkpoint_max:
+                if avg_val > best_val_max:
+                    self.save_epoch(epoch)
+                    best_val_max = avg_val
+                    cur_patience = 0
+                else:
+                    cur_patience += 1
+            else:
+                if avg_val < best_val_min:
+                    self.save_epoch(epoch)
+                    best_val_min = avg_val
+                    cur_patience = 0
+                else:
+                    cur_patience += 1
             self.print_epoch(epoch, avg_train_loss, avg_val_loss, metrics_dict,
                              cur_patience, strt)
 
