@@ -8,6 +8,7 @@ import torch
 import math
 import time
 from tqdm import tqdm
+from sklearn.model_selection import KFold
 from typing import cast, List, Optional, Tuple, TypeVar
 from core.utils.tensors import to_device
 TrainerType = TypeVar('TrainerType', bound='Trainer')
@@ -148,3 +149,18 @@ class BertTrainer:
 
     def fit(self, train_loader, val_loader, epochs):
         self.train_epochs(epochs, train_loader, val_loader)
+
+
+class BertTrainerKfold:
+    # https: // github.com / PyTorchLightning / pytorch - lightning / issues / 839
+    def __init__(self, folds, trainer):
+        self.folds = folds
+        self.trainer = trainer
+        self.kf = KFold(n_splits=folds)
+
+    def fit(self, dataset):
+        raise NotImplementedError("Not implemented yet!")
+        # for forld, (train_idx,valid_idx) in enumerate (self.kf.split(
+        #         train_df)):
+        #     train_loader = ...
+        #     valid_loader = ...
