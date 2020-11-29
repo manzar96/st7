@@ -137,7 +137,7 @@ class BertTrainer:
             avg_train_loss = avg_train_loss / len(train_loader)
             avg_val_loss, metrics_dict = self.calc_val_loss(val_loader)
             avg_val = metrics_dict['f1-score']
-            if avg_val < best_val:
+            if avg_val > best_val:
                 self.save_epoch(epoch)
                 best_val = avg_val
                 cur_patience = 0
