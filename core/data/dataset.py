@@ -10,6 +10,7 @@ import torch
 class Task71Dataset(Dataset):
 
     def __init__(self, splitname, tokenizer, maxsentlen=None):
+        self.splitname = splitname
         if splitname == 'train':
 
             self.csvfile = os.path.join("data/train_data",
@@ -51,9 +52,13 @@ class Task71Dataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        myid, text, is_humor, humor_rating, humor_controversy, offense_rating\
-            = \
-            self.data[index]
+        if self.splitname == 'train':
+            myid, text, is_humor, humor_rating, humor_controversy, offense_rating\
+                = \
+                self.data[index]
+        else:
+            myid, text = self.data[index]
+            is_humor = None
         if not self.transforms:
             text = self.tokenizer(text)
             text = mktensor(text['input_ids'], dtype=torch.long)
@@ -63,7 +68,8 @@ class Task71Dataset(Dataset):
 
 
         myid = int(myid)
-        is_humor = int(is_humor)
+        if self.splitname == 'train':
+            is_humor = int(is_humor)
         # humor_rating = float(humor_rating)
         # humor_controversy = int(humor_controversy)
         # offense_rating = float(offense_rating)
