@@ -51,8 +51,7 @@ else:
 # change config if you want
 # model.config.output_hidden_states = True
 model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
-                           drop=0.2,
-                           act='sigmoid')
+                           drop=0.2)
 
 model.to(DEVICE)
 
