@@ -27,7 +27,8 @@ def create_submition_file(outfolder, mymodel, loader, device):
 
         outputs = mymodel(input_ids=inputs,
                              attention_mask=inputs_att)
-
+        if not mymodel.act:
+            outputs = torch.softmax(outputs,dim=1)
         outputs = torch.argmax(outputs,dim=1)
         all_ids.append(myid)
         all_outputs.append(outputs)
