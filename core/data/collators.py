@@ -54,3 +54,28 @@ class Task71aCollatorTest(object):
 
         return myid, padded_inputs, inputs_pad_mask
 
+
+class ShortTextDatasetCollator(object):
+    def __init__(self, pad_indx=0, device='cpu'):
+        self.pad_indx = pad_indx
+        self.device = device
+
+    def __call__(self, batch):
+        text_input, is_humor = map(list, zip(*batch))
+
+        input_lengths = torch.tensor(
+            [len(s) for s in text_input], device=self.device)
+
+        # attention mask
+        max_length = max(input_lengths)
+        inputs_pad_mask = pad_mask(input_lengths, max_length=max_length,
+                                   device=self.device)
+        # Pad inputs and targets
+        padded_inputs = (
+            pad_sequence(text_input, batch_first=True,
+                         padding_value=self.pad_indx)
+                .to(self.device))
+
+        is_humor = mktensor(is_humor, dtype=torch.long)
+
+        return padded_inputs,inputs_pad_mask, is_humor

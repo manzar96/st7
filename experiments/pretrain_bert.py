@@ -6,8 +6,8 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from transformers import BertTokenizer, BertModel
 
-from core.data.dataset import Task71Dataset
-from core.data.collators import Task71aCollator
+from core.data.short_text_kaggle import ShortTextDataset
+from core.data.collators import ShortTextDatasetCollator
 from core.models.modules.heads import BertClassificationHead
 from core.trainers import BertTrainer
 from core.utils.parser import get_train_parser
@@ -29,12 +29,12 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 # tokenizer.eos_token = tokenizer.sep_token
 
 # load dataset
-dataset = Task71Dataset("train", tokenizer=tokenizer)
-train_dataset, val_dataset = torch.utils.data.random_split(dataset, [7200,
-                                                                     800],
+dataset = ShortTextDataset(tokenizer=tokenizer)
+train_dataset, val_dataset = torch.utils.data.random_split(dataset, [160000,
+                                                                     40000],
                               generator=torch.Generator().manual_seed(42))
 
-collator_fn = Task71aCollator(device='cpu')
+collator_fn = ShortTextDatasetCollator(device='cpu')
 train_loader = DataLoader(train_dataset, batch_size=options.batch_size,
                           drop_last=False, shuffle=True,
                           collate_fn=collator_fn)
@@ -43,15 +43,15 @@ val_loader = DataLoader(val_dataset, batch_size=options.batch_size,
                         collate_fn=collator_fn)
 
 # create model
-encoder = BertModel.from_pretrained('bert-base-uncased')
+if options.modelckpt is not None:
+    model = BertModel.from_pretrained(options.modelckpt)
+else:
+    model = BertModel.from_pretrained('bert-base-uncased')
 
 # change config if you want
-# encoder.config.output_hidden_states = True
-model = BertClassificationHead(encoder, encoder.config.hidden_size,
-                               num_classes=2, drop=0.2)
-if options.modelckpt is not None:
-    state_dict = torch.load(options.modelckpt,map_location='cpu')
-    model.load_state_dict(state_dict)
+# model.config.output_hidden_states = True
+model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
+                           drop=0.2)
 
 model.to(DEVICE)
 
