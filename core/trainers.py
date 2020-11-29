@@ -113,7 +113,7 @@ class BertTrainer:
 
     def train_epochs(self, n_epochs, train_loader, val_loader):
 
-        best_val_loss, cur_patience  = 10000, 0
+        best_val, cur_patience  = 10000, 0
 
         print("Training model....")
         self.model.train()
@@ -136,10 +136,10 @@ class BertTrainer:
                 self.optimizer.step()
             avg_train_loss = avg_train_loss / len(train_loader)
             avg_val_loss, metrics_dict = self.calc_val_loss(val_loader)
-
-            if avg_val_loss < best_val_loss:
+            avg_val = metrics_dict['f1-score']
+            if avg_val < best_val:
                 self.save_epoch(epoch)
-                best_val_loss = avg_val_loss
+                best_val = avg_val
                 cur_patience = 0
             else:
                 cur_patience += 1
