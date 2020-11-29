@@ -53,22 +53,16 @@ if options.modelckpt is not None:
     state_dict = torch.load(options.modelckpt,map_location='cpu')
     model.load_state_dict(state_dict)
 
-model2 = BertClassificationHead(model.encoder, encoder.config.hidden_size,
-                               num_classes=2, drop=0.2)
 model.to(DEVICE)
 
-for param in model2.encoder.parameters():
-    if param.requires_grad:
-        param.requires_grad = False
-
 # params and optimizer
-numparams = sum([p.numel() for p in model2.parameters()])
-train_numparams = sum([p.numel() for p in model2.parameters() if
+numparams = sum([p.numel() for p in model.parameters()])
+train_numparams = sum([p.numel() for p in model.parameters() if
                        p.requires_grad])
 print('Total Parameters: {}'.format(numparams))
 print('Trainable Parameters: {}'.format(train_numparams))
 optimizer = Adam(
-    [p for p in model2.parameters() if p.requires_grad],
+    [p for p in model.parameters() if p.requires_grad],
     lr=options.lr, weight_decay=1e-6)
 criterion = nn.CrossEntropyLoss(ignore_index=-100)
 metrics = ['f1-score','accuracy']
@@ -76,7 +70,7 @@ import ipdb;ipdb.set_trace()
 
 # create trainer
 
-trainer = BertTrainer(model=model2, optimizer=optimizer, criterion=criterion,
+trainer = BertTrainer(model=model, optimizer=optimizer, criterion=criterion,
                       metrics=metrics,
                       checkpoint_max=True,
                       checkpoint_with='f1-score',
