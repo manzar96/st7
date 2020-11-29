@@ -73,7 +73,7 @@ class BertTrainer:
             if 'f1-score' in self.metrics:
                 metrics_dict['f1-score'] = np.mean(f1)
             if 'accuracy' in self.metrics:
-                metrics_dict['accuracy'] = np.mean(f1)
+                metrics_dict['accuracy'] = np.mean(acc)
             return avg_val_loss, metrics_dict
 
     def print_epoch(self, epoch, avg_train_epoch_loss, avg_val_epoch_loss,
