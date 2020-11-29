@@ -72,6 +72,8 @@ import ipdb;ipdb.set_trace()
 
 trainer = BertTrainer(model=model, optimizer=optimizer, criterion=criterion,
                       metrics=metrics,
+                      checkpoint_max=True,
+                      checkpoint_with='f1-score',
                       patience=5, scheduler=None,
                       checkpoint_dir=options.ckpt, device=DEVICE)
 # train model
