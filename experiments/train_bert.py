@@ -55,6 +55,10 @@ model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
 
 model.to(DEVICE)
 
+for param in model.encoder.parameters():
+    if param.requires_grad:
+        param.requires_grad = False
+
 # params and optimizer
 numparams = sum([p.numel() for p in model.parameters()])
 train_numparams = sum([p.numel() for p in model.parameters() if
