@@ -95,3 +95,33 @@ def get_test_parser():
     )
 
     return parser
+
+
+def get_test_parser():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--outfolder",
+        type=str,
+        required=True,
+        help="Folder where the generated answers while be stored.",
+    )
+
+    parser.add_argument(
+        "--modelckpt",
+        type=str,
+        required=True,
+        help="Checkpoint file to load the model.",
+    )
+
+
+    parser.add_argument(
+        "--max-sent-len", type=int, default=100, help="Max num tokens per sentence"
+    )
+
+    parser.add_argument(
+        "-bs", "--batch-size", type=int, default=32, help="Training/eval batch size"
+    )
+
+
+    return parser
