@@ -6,7 +6,8 @@ class BertClassificationHead(nn.Module):
                  act='none'):
         super(BertClassificationHead, self).__init__()
         self.encoder = encoder
-        self.clf = nn.Linear(encoded_features, num_classes)
+        self.clf1 = nn.Linear(encoded_features, 126)
+        self.clf2 = nn.Linear(encoded_features, num_classes)
         self.drop = nn.Dropout(drop)
         if act is 'none':
             self.act = None
@@ -16,7 +17,9 @@ class BertClassificationHead(nn.Module):
     def forward(self, *args, **kwargs):
         outputs = self.encoder(*args, **kwargs)
         pulled_output = outputs[1]
-        out = self.clf(pulled_output)
+        out = self.clf1(pulled_output)
+        out = self.drop(out)
+        out = self.clf2(out)
         if self.act:
             out = self.act(out)
         out = self.drop(out)
