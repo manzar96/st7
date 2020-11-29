@@ -22,7 +22,7 @@ parser = get_train_parser()
 options = parser.parse_args()
 
 # make transforms using only bert tokenizer!
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
 # CLS token will work as BOS token
 # tokenizer.bos_token = tokenizer.cls_token
 # SEP token will work as EOS token
@@ -43,7 +43,7 @@ val_loader = DataLoader(val_dataset, batch_size=options.batch_size,
                         collate_fn=collator_fn)
 
 # create model
-encoder = BertModel.from_pretrained('bert-base-uncased')
+encoder = BertModel.from_pretrained('bert-large-uncased')
 
 # change config if you want
 # encoder.config.output_hidden_states = True
