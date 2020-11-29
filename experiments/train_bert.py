@@ -43,15 +43,15 @@ val_loader = DataLoader(val_dataset, batch_size=options.batch_size,
                         collate_fn=collator_fn)
 
 # create model
-if options.modelckpt is not None:
-    model = BertModel.from_pretrained(options.modelckpt)
-else:
-    model = BertModel.from_pretrained('bert-base-uncased')
+encoder = BertModel.from_pretrained('bert-base-uncased')
 
 # change config if you want
-# model.config.output_hidden_states = True
-model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
-                           drop=0.2)
+# encoder.config.output_hidden_states = True
+model = BertClassificationHead(encoder, encoder.config.hidden_size,
+                               num_classes=2, drop=0.2)
+if options.modelckpt is not None:
+    state_dict = torch.load(options.modelckpt,map_location='cpu')
+    model.load_state_dict(state_dict)
 
 model.to(DEVICE)
 
