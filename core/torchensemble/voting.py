@@ -49,7 +49,6 @@ def _parallel_fit(epoch, estimator_idx,
         if batch_idx % log_interval == 0:
 
             if is_classification:
-                import ipdb;ipdb.set_trace()
                 y_pred = outputs.data.max(1)[1]
                 correct = y_pred.eq(targets.view(-1).data).sum()
 
