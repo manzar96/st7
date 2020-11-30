@@ -120,6 +120,36 @@ def get_feat_parser():
         required=True,
         help="Classifier to be used.",
     )
+    return parser
 
 
+def get_feat_test_parser():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--outfolder",
+        type=str,
+        required=True,
+        help="Folder where the output will be stored",
+    )
+    parser.add_argument(
+        "--modelckpt",
+        type=str,
+        required=True,
+        help="Checkpoint file for clf!",
+    )
+
+    parser.add_argument(
+        "--features",
+        type=str,
+        default=True,
+        help="Features pickle to be loaded.",
+    )
+
+    # parser.add_argument(
+    #     "--clf",
+    #     type=str,
+    #     required=True,
+    #     help="Classifier to be used.",
+    # )
     return parser

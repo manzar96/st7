@@ -1,6 +1,7 @@
 import pickle
 import os
 import numpy as np
+from tqdm import tqdm
 from core.utils.parser import get_feat_parser
 
 from sklearn.metrics import f1_score, accuracy_score
@@ -13,6 +14,8 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
+from xgboost import XGBClassifier
+
 
 parser = get_feat_parser()
 options = parser.parse_args()
@@ -33,29 +36,29 @@ feats = np.array(feats)
 humor = np.array(humor)
 
 
-if options.clf is 'GaussianProcess':
+if options.clf == 'GaussianProc':
     clf = GaussianProcessClassifier()
-elif options.clf is "SVC":
+elif options.clf == "SVC":
     clf = SVC()
-elif options.clf is "LinearSVC":
+elif options.clf == "LinearSVC":
     clf = LinearSVC(max_iter=10000,dual=False)
-elif options.clf is "LinearSVR":
-    clf = LinearSVR(dual=False)
-elif options.clf is "DecisionTree":
+elif options.clf == "DecisionTree":
     clf = DecisionTreeClassifier()
-elif options.clf is "RandomForest":
+elif options.clf == "RandomForest":
     clf = RandomForestClassifier()
-elif options.clf is "AdaBoost":
+elif options.clf == "AdaBoost":
     clf = AdaBoostClassifier()
-elif options.clf is "KNN":
+elif options.clf == "XGBoost":
+    clf = XGBClassifier()
+elif options.clf == "KNN":
     clf = KNeighborsClassifier(n_neighbors=5)
 elif options.clf == "GaussianNB":
     clf = GaussianNB()
-elif options.clf is "RBF":
+elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
 else:
-    raise IOError("Please a valid select clf!")
+    raise IOError("Please select a valid clf!")
 
 # perform kfold cross-validation with k=5
 kf = KFold(n_splits=5)
@@ -70,32 +73,32 @@ for train_index, test_index in kf.split(humor):
     f1.append(f1_score(y_test, pred))
     acc.append(accuracy_score(y_test, pred))
 
-print(np.mean(f1))
-print(np.mean(acc))
+print("F1-score: ",np.mean(f1))
+print("Accuracy score: ",np.mean(acc))
 
-if options.clf is 'GaussianProcess':
+if options.clf == 'GaussianProc':
     clf = GaussianProcessClassifier()
-elif options.clf is "SVC":
+elif options.clf == "SVC":
     clf = SVC()
-elif options.clf is "LinearSVC":
+elif options.clf == "LinearSVC":
     clf = LinearSVC(max_iter=10000,dual=False)
-elif options.clf is "LinearSVR":
-    clf = LinearSVR(dual=False)
-elif options.clf is "DecisionTree":
+elif options.clf == "DecisionTree":
     clf = DecisionTreeClassifier()
-elif options.clf is "RandomForest":
+elif options.clf == "RandomForest":
     clf = RandomForestClassifier()
-elif options.clf is "AdaBoost":
+elif options.clf == "AdaBoost":
     clf = AdaBoostClassifier()
-elif options.clf is "KNN":
+elif options.clf == "XGBoost":
+    clf = XGBClassifier()
+elif options.clf == "KNN":
     clf = KNeighborsClassifier(n_neighbors=5)
 elif options.clf == "GaussianNB":
     clf = GaussianNB()
-elif options.clf is "RBF":
+elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
 else:
-    raise IOError("Please a valid select clf!")
+    raise IOError("Please select a valid clf!")
 
 clf.fit(feats,humor)
 if not os.path.exists(options.ckpt):
