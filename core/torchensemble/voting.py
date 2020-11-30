@@ -24,14 +24,24 @@ def _parallel_fit(epoch, estimator_idx,
     optimizer = torch.optim.Adam(estimator.parameters(),
                                  lr=lr, weight_decay=weight_decay)
 
-    for batch_idx, (X_train, y_train) in enumerate(data_loader):
+    for batch_idx, batch in enumerate(data_loader):
 
-        batch_size = X_train.size()[0]
-        X_train, y_train = (X_train.to(device),
-                            y_train.to(device))
+        batch_size = batch[0].shape[0]
+        inputs = batch[0]
+        inputs_att = batch[1]
+        targets = batch[2]
+        inputs.to(device)
+        inputs_att.to(device)
+        targets.to(device)
 
-        output = estimator(X_train)
-        loss = criterion(output, y_train)
+        outputs = estimator(input_ids=inputs,
+                             attention_mask=inputs_att)
+        import ipdb;ipdb.set_trace()
+        # X_train, y_train = (X_train.to(device),
+        #                     y_train.to(device))
+        #
+        # output = estimator(X_train)
+        loss = criterion(output, targets)
 
         optimizer.zero_grad()
         loss.backward()
