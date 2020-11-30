@@ -97,7 +97,7 @@ def get_test_parser():
     return parser
 
 
-def get_test_parser():
+def get_feat_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -108,19 +108,17 @@ def get_test_parser():
     )
 
     parser.add_argument(
-        "--modelckpt",
+        "--features",
+        type=str,
+        default=None,
+        help="Features pickle to be loaded.",
+    )
+
+    parser.add_argument(
+        "--clf",
         type=str,
         required=True,
-        help="Checkpoint file to load the model.",
-    )
-
-
-    parser.add_argument(
-        "--max-sent-len", type=int, default=100, help="Max num tokens per sentence"
-    )
-
-    parser.add_argument(
-        "-bs", "--batch-size", type=int, default=32, help="Training/eval batch size"
+        help="Classifier to be used.",
     )
 
 
