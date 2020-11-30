@@ -74,6 +74,6 @@ if options.modelckpt is not None:
 model.to(DEVICE)
 
 res_dict = get_features(loader, model, DEVICE)
-if not os.path.exists('./features/'):
-    os.makedirs('./features')
-pickle.dump(res_dict, open("./features/bert_features.pkl", "wb"))
+if not os.path.exists('./features_train/'):
+    os.makedirs('./features_train')
+pickle.dump(res_dict, open("./features_train/bert_features.pkl", "wb"))
