@@ -19,16 +19,17 @@ def get_features(data_loader,mymodel,device):
     ids = []
     is_humor = []
     mymodel.eval()
-    for index, batch in enumerate(tqdm(data_loader)):
-        myid = batch[0]
-        inputs = to_device(batch[1], device=device)
-        inputs_att = to_device(batch[2], device=device)
-        targets = to_device(batch[3], device=device)
-        outputs = mymodel.encoder(input_ids=inputs, attention_mask=inputs_att)
-        import ipdb;ipdb.set_trace()
-        features.append(outputs[1])
-        ids.append(myid)
-        is_humor.append(targets)
+    with torch.no_grad():
+        for index, batch in enumerate(tqdm(data_loader)):
+            myid = batch[0]
+            inputs = to_device(batch[1], device=device)
+            inputs_att = to_device(batch[2], device=device)
+            targets = to_device(batch[3], device=device)
+            outputs = mymodel.encoder(input_ids=inputs, attention_mask=inputs_att)
+            import ipdb;ipdb.set_trace()
+            features.append(outputs[1].cpu().numpy())
+            ids.append(myid)
+            is_humor.append(targets.cpu().numpy())
     ids = [item for sublist in ids for item in sublist]
     features = [item for sublist in features for item in sublist]
     is_humor = [item for sublist in is_humor for item in sublist]
