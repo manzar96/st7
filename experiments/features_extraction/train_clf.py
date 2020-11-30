@@ -47,7 +47,7 @@ elif options.clf == "DecisionTree":
 elif options.clf == "RandomForest":
     clf = RandomForestClassifier()
 elif options.clf == "AdaBoost":
-    clf = AdaBoostClassifier()
+    clf = AdaBoostClassifier(n_estimators=100)
 elif options.clf == "XGBoost":
     clf = XGBClassifier()
 elif options.clf == "KNN":
