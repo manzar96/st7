@@ -68,7 +68,7 @@ test_loader = DataLoader(test_dataset, batch_size=options.batch_size,
 model = RobertaModel.from_pretrained('roberta-base')
 model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
                            drop=0.2,
-                           act=None)
+                           act='none')
 
 
 if options.modelckpt is not None:
