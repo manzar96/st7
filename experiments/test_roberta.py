@@ -3,7 +3,7 @@ import csv
 import os
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from transformers import BertTokenizer, BertModel
+from transformers import RobertaTokenizer,RobertaModel
 
 from core.data.dataset import Task71Dataset
 from core.data.collators import Task71aCollatorTest
@@ -51,7 +51,7 @@ parser = get_test_parser()
 options = parser.parse_args()
 
 # make transforms using only bert tokenizer!
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
 
 
 # load dataset
@@ -65,9 +65,11 @@ test_loader = DataLoader(test_dataset, batch_size=options.batch_size,
 
 
 # create model
-model = BertModel.from_pretrained('bert-base-uncased')
+model = RobertaModel.from_pretrained('roberta-base')
 model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
-                           drop=0.2,act='none')
+                           drop=0.2,
+                           act='none')
+
 
 if options.modelckpt is not None:
     state_dict = torch.load(options.modelckpt,map_location='cpu')
