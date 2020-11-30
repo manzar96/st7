@@ -1,10 +1,8 @@
-import torch
 import pickle
-import csv
+import os
 import numpy as np
 from core.utils.parser import get_feat_parser
 
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn.model_selection import KFold
 from sklearn.neural_network import MLPClassifier
@@ -31,9 +29,10 @@ for key in dict.keys():
     value = dict[key]
     feats.append(value[0].tolist())
     humor.append(value[1].tolist())
+feats = np.array(feats)
+humor = np.array(humor)
 
-# X_train, X_test, y_train, y_test = train_test_split(feats,humor,test_size=0.2,
-#                                                     random_state=42)
+
 if options.clf is 'GaussianProcess':
     clf = GaussianProcessClassifier()
 elif options.clf is "SVC":
@@ -73,3 +72,33 @@ for train_index, test_index in kf.split(humor):
 
 print(np.mean(f1))
 print(np.mean(acc))
+
+if options.clf is 'GaussianProcess':
+    clf = GaussianProcessClassifier()
+elif options.clf is "SVC":
+    clf = SVC()
+elif options.clf is "LinearSVC":
+    clf = LinearSVC(max_iter=10000,dual=False)
+elif options.clf is "LinearSVR":
+    clf = LinearSVR(dual=False)
+elif options.clf is "DecisionTree":
+    clf = DecisionTreeClassifier()
+elif options.clf is "RandomForest":
+    clf = RandomForestClassifier()
+elif options.clf is "AdaBoost":
+    clf = AdaBoostClassifier()
+elif options.clf is "KNN":
+    clf = KNeighborsClassifier(n_neighbors=5)
+elif options.clf == "GaussianNB":
+    clf = GaussianNB()
+elif options.clf is "RBF":
+    kernel = 1.0 * RBF(1.0)
+    clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+else:
+    raise IOError("Please a valid select clf!")
+
+clf.fit(feats,humor)
+if not os.path.exists(options.ckpt):
+    os.makedirs(options.ckpt)
+pickle.dump(clf, open(os.path.join(options.ckpt,"{}.pth".format(options.clf)),
+                   "wb"))

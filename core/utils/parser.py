@@ -101,10 +101,10 @@ def get_feat_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--outfolder",
+        "--ckpt",
         type=str,
         required=True,
-        help="Folder where the generated answers while be stored.",
+        help="Folder where the clf will be stored",
     )
 
     parser.add_argument(
