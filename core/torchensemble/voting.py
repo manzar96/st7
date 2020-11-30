@@ -50,8 +50,8 @@ def _parallel_fit(epoch, estimator_idx,
 
             if is_classification:
                 import ipdb;ipdb.set_trace()
-                y_pred = output.data.max(1)[1]
-                correct = y_pred.eq(y_train.view(-1).data).sum()
+                y_pred = outputs.data.max(1)[1]
+                correct = y_pred.eq(targets.view(-1).data).sum()
 
                 msg = ('Estimator: {:03d} | Epoch: {:03d} |'
                        ' Batch: {:03d} | Loss: {:.5f} | Correct:'
