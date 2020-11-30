@@ -4,6 +4,7 @@ cache/*
 checkpoints/*
 data/*
 outputs/*
+features/*
 .idea/
 
 # Byte-compiled / optimized / DLL files

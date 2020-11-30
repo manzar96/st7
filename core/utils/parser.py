@@ -97,31 +97,59 @@ def get_test_parser():
     return parser
 
 
-def get_test_parser():
+def get_feat_parser():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--ckpt",
+        type=str,
+        required=True,
+        help="Folder where the clf will be stored",
+    )
+
+    parser.add_argument(
+        "--features",
+        type=str,
+        default=None,
+        help="Features pickle to be loaded.",
+    )
+
+    parser.add_argument(
+        "--clf",
+        type=str,
+        required=True,
+        help="Classifier to be used.",
+    )
+    return parser
+
+
+def get_feat_test_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
         "--outfolder",
         type=str,
         required=True,
-        help="Folder where the generated answers while be stored.",
+        help="Folder where the output will be stored",
     )
-
     parser.add_argument(
         "--modelckpt",
         type=str,
         required=True,
-        help="Checkpoint file to load the model.",
-    )
-
-
-    parser.add_argument(
-        "--max-sent-len", type=int, default=100, help="Max num tokens per sentence"
+        help="Checkpoint file for clf!",
     )
 
     parser.add_argument(
-        "-bs", "--batch-size", type=int, default=32, help="Training/eval batch size"
+        "--features",
+        type=str,
+        default=True,
+        help="Features pickle to be loaded.",
     )
 
-
+    # parser.add_argument(
+    #     "--clf",
+    #     type=str,
+    #     required=True,
+    #     help="Classifier to be used.",
+    # )
     return parser

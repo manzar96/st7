@@ -67,7 +67,7 @@ test_loader = DataLoader(test_dataset, batch_size=options.batch_size,
 # create model
 model = BertModel.from_pretrained('bert-base-uncased')
 model = BertClassificationHead(model, model.config.hidden_size, num_classes=2,
-                           drop=0.2,act='none')
+                           drop=0.2, act='none')
 
 if options.modelckpt is not None:
     state_dict = torch.load(options.modelckpt,map_location='cpu')
