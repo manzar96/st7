@@ -24,45 +24,15 @@ options = parser.parse_args()
 if options.features is None:
     raise IOError("Enter features!")
 
-dict  = pickle.load(open(options.features, "rb"))
+dict = pickle.load(open(options.features, "rb"))
 
 ids = []
 feats=[]
 for key in dict.keys():
     value = dict[key]
     ids.append(int(key))
-    feats.append(value[0].tolist())
+    feats.append(value.tolist())
 feats = np.array(feats)
-
-# feats_df = pd.DataFrame(feats)
-# ids_df = pd.DataFrame(ids,columns=['ids'])
-# data_df = pd.concat([ids_df,feats_df],axis=1)
-# data_test_df = data_df.iloc[:,1:len(feats[0])+1]
-
-
-# if options.clf == 'GaussianProc':
-#     clf = GaussianProcessClassifier()
-# elif options.clf == "SVC":
-#     clf = SVC()
-# elif options.clf == "LinearSVC":
-#     clf = LinearSVC(max_iter=10000,dual=False)
-# elif options.clf == "DecisionTree":
-#     clf = DecisionTreeClassifier()
-# elif options.clf == "RandomForest":
-#     clf = RandomForestClassifier()
-# elif options.clf == "AdaBoost":
-#     clf = AdaBoostClassifier()
-# elif options.clf == "XGBoost":
-#     clf = XGBClassifier()
-# elif options.clf == "KNN":
-#     clf = KNeighborsClassifier(n_neighbors=5)
-# elif options.clf == "GaussianNB":
-#     clf = GaussianNB()
-# elif options.clf == "RBF":
-#     kernel = 1.0 * RBF(1.0)
-#     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
-# else:
-#     raise IOError("Please select a valid clf!")
 
 clf = pickle.load(open(options.modelckpt,'rb'))
 preds = clf.predict(feats)
