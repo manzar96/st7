@@ -26,7 +26,6 @@ def get_features(data_loader,mymodel,device):
             inputs_att = to_device(batch[2], device=device)
             targets = to_device(batch[3], device=device)
             outputs = mymodel.encoder(input_ids=inputs, attention_mask=inputs_att)
-            import ipdb;ipdb.set_trace()
             features.append(outputs[1].cpu().numpy())
             ids.append(myid)
             is_humor.append(targets.cpu().numpy())
