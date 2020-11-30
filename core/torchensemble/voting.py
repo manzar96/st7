@@ -30,9 +30,9 @@ def _parallel_fit(epoch, estimator_idx,
         inputs = batch[0]
         inputs_att = batch[1]
         targets = batch[2]
-        inputs.to(device)
-        inputs_att.to(device)
-        targets.to(device)
+        inputs = inputs.to(device)
+        inputs_att = inputs_att.to(device)
+        targets = targets.to(device)
         import ipdb;ipdb.set_trace()
         outputs = estimator(input_ids=inputs,
                              attention_mask=inputs_att)
