@@ -33,15 +33,13 @@ def _parallel_fit(epoch, estimator_idx,
         inputs = inputs.to(device)
         inputs_att = inputs_att.to(device)
         targets = targets.to(device)
-        import ipdb;ipdb.set_trace()
         outputs = estimator(input_ids=inputs,
                              attention_mask=inputs_att)
-        import ipdb;ipdb.set_trace()
         # X_train, y_train = (X_train.to(device),
         #                     y_train.to(device))
         #
         # output = estimator(X_train)
-        loss = criterion(output, targets)
+        loss = criterion(outputs, targets)
 
         optimizer.zero_grad()
         loss.backward()
@@ -51,6 +49,7 @@ def _parallel_fit(epoch, estimator_idx,
         if batch_idx % log_interval == 0:
 
             if is_classification:
+                import ipdb;ipdb.set_trace()
                 y_pred = output.data.max(1)[1]
                 correct = y_pred.eq(y_train.view(-1).data).sum()
 
