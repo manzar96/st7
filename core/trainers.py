@@ -181,7 +181,6 @@ class BertTrainerKfold:
         #     valid_loader = ...
 
 
-
 class T5Trainer:
 
     def __init__(self, model,
@@ -332,3 +331,41 @@ class T5Trainer:
 
     def fit(self, train_loader, val_loader, epochs):
         self.train_epochs(epochs, train_loader, val_loader)
+
+        
+class BertTrainerTask72(BertTrainer):
+
+    def train_step(self, batch):
+        self.model.train()
+        self.optimizer.zero_grad()
+
+        inputs = to_device(batch[0], device=self.device)
+        inputs_att = to_device(batch[1], device=self.device)
+        humor_rating = to_device(batch[2], device=self.device)
+        outputs = self.model(input_ids=inputs,
+                             attention_mask=inputs_att)
+        outputs = outputs.squeeze(1)
+        loss = self.criterion(outputs, humor_rating)
+
+        return loss
+
+    def calc_val_loss(self, val_loader):
+
+        self.model.eval()
+        with torch.no_grad():
+            avg_val_loss = 0
+
+            metrics_dict={}
+            for index, batch in enumerate(tqdm(val_loader)):
+                inputs = to_device(batch[0], device=self.device)
+                inputs_att = to_device(batch[1], device=self.device)
+                humor_rating = to_device(batch[2], device=self.device)
+                outputs = self.model(input_ids=inputs,
+                                     attention_mask=inputs_att)
+                outputs = outputs.squeeze(1)
+                loss = self.criterion(outputs, humor_rating)
+                avg_val_loss += loss.item()
+
+            avg_val_loss = avg_val_loss / len(val_loader)
+
+            return avg_val_loss, metrics_dict

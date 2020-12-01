@@ -7,10 +7,12 @@ class ClassificationHead(nn.Module):
         self.encoder = encoder
         self.clf = nn.Linear(encoded_features, num_classes)
         self.drop = nn.Dropout(drop)
-        if act is 'none':
+        if act == 'none':
             self.act = None
-        elif act is 'sigmoid':
+        elif act == 'sigmoid':
             self.act = nn.Sigmoid()
+        elif act == 'relu':
+            self.act = nn.ReLU()
 
     def forward(self, *args, **kwargs):
         outputs = self.encoder(*args, **kwargs)
@@ -32,6 +34,8 @@ class BertClassificationHead(nn.Module):
             self.act = None
         elif act is 'sigmoid':
             self.act = nn.Sigmoid()
+        elif act == 'relu':
+            self.act = nn.ReLU()
 
     def forward(self, *args, **kwargs):
         outputs = self.encoder(*args, **kwargs)
