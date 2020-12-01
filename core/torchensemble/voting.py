@@ -134,10 +134,8 @@ class VotingClassifier(BaseModule):
             ids=batch[0]
             inputs = batch[1]
             inputs_att = batch[2]
-            targets = batch[3]
             inputs = inputs.to(self.device)
             inputs_att = inputs_att.to(self.device)
-            targets = targets.to(self.device)
             y_pred_proba = torch.zeros(batch_size, self.output_dim).to(
                 self.device)
             for estimator in self.estimators_:
