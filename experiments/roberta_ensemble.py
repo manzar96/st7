@@ -1,4 +1,5 @@
 import torch
+import os
 import torch.nn as nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
@@ -41,11 +42,14 @@ encoder = RobertaModel.from_pretrained('roberta-base')
 # change config if you want
 # encoder.config.output_hidden_states = True
 base_estimator = BertClassificationHead(encoder, encoder.config.hidden_size,
-                                        num_classes=2, drop=0.2)
+                                        num_classes=2, drop=0.2,act='sigmoid')
 
 model = VotingClassifier(estimator=base_estimator, n_estimators=3,
                          output_dim=2,lr=1.5e-5,epochs=3,weight_decay=1e-6)
-# import ipdb;ipdb.set_trace()
-# model.fit(train_loader)
-import ipdb;ipdb.set_trace()
+model.fit(train_loader)
 model.predict(val_loader)
+
+if not os.path.exists(options.ckpt):
+    os.makedirs(options.ckpt)
+torch.save(model.state_dict(), os.path.join(options.ckpt,
+                                            'model_checkpoint.pth'))
