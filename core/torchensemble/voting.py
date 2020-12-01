@@ -78,7 +78,7 @@ class VotingClassifier(BaseModule):
         inputs = inputs.to(self.device)
         inputs_att = inputs_att.to(self.device)
         for estimator in self.estimators_:
-            outputs = estimator(inputs=inputs,inputs_att=inputs_att)
+            outputs = estimator(input_ids=inputs,attention_mask=inputs_att)
             y_pred_proba += F.softmax(outputs, dim=1)
         y_pred_proba /= self.n_estimators
 
