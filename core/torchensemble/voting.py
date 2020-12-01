@@ -105,8 +105,6 @@ class VotingClassifier(BaseModule):
                     self.estimators_[i] = copy.deepcopy(rets[i])
 
     def predict(self, test_loader):
-        import ipdb;ipdb.set_trace()
-
         self.eval()
         correct = 0.
 
@@ -125,6 +123,33 @@ class VotingClassifier(BaseModule):
         accuracy = 100. * float(correct) / len(test_loader.dataset)
         print(accuracy)
         return accuracy
+
+    def predict2(self, test_loader):
+        self.eval()
+        ids_all=[]
+        preds =[]
+
+        for batch_idx, batch in enumerate(test_loader):
+            batch_size = batch[0].shape[0]
+            ids=batch[0]
+            inputs = batch[1]
+            inputs_att = batch[2]
+            targets = batch[3]
+            inputs = inputs.to(self.device)
+            inputs_att = inputs_att.to(self.device)
+            targets = targets.to(self.device)
+            y_pred_proba = torch.zeros(batch_size, self.output_dim).to(
+                self.device)
+            for estimator in self.estimators_:
+                outputs = estimator(input_ids=inputs,
+                                    attention_mask=inputs_att)
+                y_pred_proba += F.softmax(outputs, dim=1)
+            y_pred_proba /= self.n_estimators
+            y_pred = y_pred_proba.data.max(1)[1]
+            ids_all.append(ids)
+            preds.append(y_pred)
+
+        return  ids_all,preds
 
 
 class VotingRegressor(BaseModule):
