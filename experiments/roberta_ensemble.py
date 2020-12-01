@@ -45,7 +45,7 @@ base_estimator = BertClassificationHead(encoder, encoder.config.hidden_size,
 
 model = VotingClassifier(estimator=base_estimator, n_estimators=2,
                          output_dim=2,lr=1.5e-5,epochs=1,weight_decay=1e-6)
-import ipdb;ipdb.set_trace()
-model.fit(train_loader)
+# import ipdb;ipdb.set_trace()
+# model.fit(train_loader)
 import ipdb;ipdb.set_trace()
 model.predict(val_loader)
