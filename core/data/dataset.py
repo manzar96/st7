@@ -110,7 +110,10 @@ class Task723Dataset(Dataset):
                 if index == 0:
                     continue
                 # if text is humorous then add to data else not
-                if line[2] == '1':
+                if self.splitname == 'train':
+                    if line[2] == '1':
+                        data.append(line)
+                else:
                     data.append(line)
         return data
 

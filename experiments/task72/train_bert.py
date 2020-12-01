@@ -71,7 +71,7 @@ trainer = BertTrainerTask72(model=model, optimizer=optimizer,
                           criterion=criterion,
 
                       checkpoint_max=False,
-                      checkpoint_with='mse',
+                      checkpoint_with=None,
                       patience=5, scheduler=None,
                       checkpoint_dir=options.ckpt, device=DEVICE)
 # train model
