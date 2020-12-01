@@ -20,16 +20,18 @@ def create_submition_file(outfolder, mymodel, loader, device):
     mymodel.eval()
     all_ids = []
     all_outputs = []
-    for index, batch in enumerate(tqdm(loader)):
-        myid = batch[0]
-        inputs = to_device(batch[1], device=device)
-        inputs_att = to_device(batch[2], device=device)
+    mymodel.eval()
+    with torch.no_grad():
+        for index, batch in enumerate(tqdm(loader)):
+            myid = batch[0]
+            inputs = to_device(batch[1], device=device)
+            inputs_att = to_device(batch[2], device=device)
 
-        outputs = mymodel(input_ids=inputs,
-                             attention_mask=inputs_att)
-        outputs = outputs.squeeze(1)
-        all_ids.append(myid)
-        all_outputs.append(outputs)
+            outputs = mymodel(input_ids=inputs,
+                                 attention_mask=inputs_att)
+            outputs = outputs.squeeze(1)
+            all_ids.append(myid)
+            all_outputs.append(outputs)
 
     ids_list = [item for sublist in all_ids for item in sublist]
     outs_list = [item for sublist in all_outputs for item in sublist]
