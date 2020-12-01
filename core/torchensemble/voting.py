@@ -69,7 +69,8 @@ class VotingClassifier(BaseModule):
 
     def forward(self, X):
         import ipdb;ipdb.set_trace()
-        batch_size = X.size()[0]
+        batch_size = X[0].size()[0]
+        import ipdb;ipdb.set_trace()
         y_pred_proba = torch.zeros(batch_size, self.output_dim).to(self.device)
 
         # Average over class probabilities from all base estimators.
@@ -100,15 +101,22 @@ class VotingClassifier(BaseModule):
                     self.estimators_[i] = copy.deepcopy(rets[i])
 
     def predict(self, test_loader):
+        import ipdb;ipdb.set_trace()
 
         self.eval()
         correct = 0.
 
-        for batch_idx, (X_test, y_test) in enumerate(test_loader):
-            X_test, y_test = X_test.to(self.device), y_test.to(self.device)
-            output = self.forward(X_test)
+        for batch_idx, batch in enumerate(test_loader):
+            batch_size = batch[0].shape[0]
+            inputs = batch[0]
+            inputs_att = batch[1]
+            targets = batch[2]
+            inputs = inputs.to(self.device)
+            inputs_att = inputs_att.to(self.device)
+            targets = targets.to(self.device)
+            output = self.forward(batch)
             y_pred = output.data.max(1)[1]
-            correct += y_pred.eq(y_test.view(-1).data).sum()
+            correct += y_pred.eq(targets.view(-1).data).sum()
 
         accuracy = 100. * float(correct) / len(test_loader.dataset)
 
