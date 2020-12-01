@@ -68,14 +68,18 @@ def _parallel_fit(epoch, estimator_idx,
 class VotingClassifier(BaseModule):
 
     def forward(self, X):
-        import ipdb;ipdb.set_trace()
         batch_size = X[0].size()[0]
-        import ipdb;ipdb.set_trace()
         y_pred_proba = torch.zeros(batch_size, self.output_dim).to(self.device)
 
         # Average over class probabilities from all base estimators.
+        inputs = X[0]
+        inputs_att = X[1]
+        targets = X[2]
+        inputs = inputs.to(self.device)
+        inputs_att = inputs_att.to(self.device)
         for estimator in self.estimators_:
-            y_pred_proba += F.softmax(estimator(X), dim=1)
+            outputs = estimator(inputs=inputs,inputs_att=inputs_att)
+            y_pred_proba += F.softmax(outputs, dim=1)
         y_pred_proba /= self.n_estimators
 
         return y_pred_proba
