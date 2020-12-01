@@ -123,7 +123,7 @@ class VotingClassifier(BaseModule):
             correct += y_pred.eq(targets.view(-1).data).sum()
 
         accuracy = 100. * float(correct) / len(test_loader.dataset)
-
+        print(accuracy)
         return accuracy
 
 
