@@ -130,7 +130,7 @@ class VotingClassifier(BaseModule):
         preds =[]
 
         for batch_idx, batch in enumerate(test_loader):
-            batch_size = batch[0].shape[0]
+            batch_size = batch[1].shape[0]
             ids=batch[0]
             inputs = batch[1]
             inputs_att = batch[2]
