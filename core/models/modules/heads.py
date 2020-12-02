@@ -16,7 +16,6 @@ class ClassificationHead(nn.Module):
 
     def forward(self, *args, **kwargs):
         outputs = self.encoder(*args, **kwargs)
-        import ipdb;ipdb.set_trace()
         out = self.clf(outputs)
         if self.act:
             out = self.act(out)
@@ -30,9 +29,9 @@ class BertClassificationHead(nn.Module):
         self.encoder = encoder
         self.clf = nn.Linear(encoded_features, num_classes)
         self.drop = nn.Dropout(drop)
-        if act is 'none':
+        if act == 'none':
             self.act = None
-        elif act is 'sigmoid':
+        elif act == 'sigmoid':
             self.act = nn.Sigmoid()
         elif act == 'relu':
             self.act = nn.ReLU()
@@ -53,9 +52,9 @@ class T5ClassificationHead(nn.Module):
         self.encoder = encoder
         self.clf = nn.Linear(encoded_features, num_classes)
         self.drop = nn.Dropout(drop)
-        if act is 'none':
+        if act == 'none':
             self.act = None
-        elif act is 'sigmoid':
+        elif act == 'sigmoid':
             self.act = nn.Sigmoid()
 
     def forward(self, *args, **kwargs):
