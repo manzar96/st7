@@ -16,6 +16,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBClassifier
 
+# from EvoDAG.model import EvoDAGE
 
 parser = get_feat_parser()
 options = parser.parse_args()
@@ -57,6 +58,8 @@ elif options.clf == "GaussianNB":
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+# elif options.clf == 'evodage':
+#     clf = EvoDAGE(n_estimators=30, n_jobs=4)
 else:
     raise IOError("Please select a valid clf!")
 
@@ -65,6 +68,9 @@ kf = KFold(n_splits=5)
 
 f1 = []
 acc = []
+
+# m = EvoDAGE(n_estimators=30, n_jobs=1).fit(X, y)
+
 for train_index, test_index in kf.split(humor):
     X_train,X_test = feats[train_index], feats[test_index]
     y_train,y_test = humor[train_index],humor[test_index]
@@ -97,6 +103,8 @@ elif options.clf == "GaussianNB":
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+# elif options.clf == 'evodage':
+#     clf = EvoDAGE(n_estimators=30, n_jobs=4)
 else:
     raise IOError("Please select a valid clf!")
 
