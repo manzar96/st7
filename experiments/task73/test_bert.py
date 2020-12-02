@@ -30,6 +30,9 @@ def create_submition_file(outfolder, mymodel, loader, device):
             outputs = mymodel(input_ids=inputs,
                                  attention_mask=inputs_att)
             outputs = outputs.squeeze(1)
+            # if not mymodel.act:
+            outputs = torch.softmax(outputs, dim=1)
+            outputs = torch.argmax(outputs, dim=1)
             all_ids.append(myid)
             all_outputs.append(outputs)
 
@@ -40,7 +43,7 @@ def create_submition_file(outfolder, mymodel, loader, device):
         csv_writer = csv.writer(output, delimiter=',',
                                      quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for id,out in zip(ids_list, outs_list):
-            csv_writer.writerow([id, '{:.3f}'.format(float(out))])
+            csv_writer.writerow([id, int(out)])
 
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
