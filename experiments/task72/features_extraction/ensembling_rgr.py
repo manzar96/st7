@@ -13,8 +13,8 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor,\
-    HistGradientBoostingRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor,  \
+    GradientBoostingRegressor,BaggingRegressor,VotingRegressor
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBRegressor
 
@@ -39,74 +39,78 @@ humor = np.array(humor)
 
 
 if options.clf == 'GaussianProc':
-    clf = GaussianProcessRegressor()
+    clf1 = GaussianProcessRegressor()
 elif options.clf == "SVR":
-    clf = SVR()
+    clf1 = SVR()
 elif options.clf == "LinearSVR":
-    clf = LinearSVR(max_iter=10000)
+    clf1 = LinearSVR(max_iter=10000)
 elif options.clf == "DecisionTree":
-    clf = DecisionTreeRegressor()
+    clf1 = DecisionTreeRegressor()
 elif options.clf == "RandomForest":
-    clf = RandomForestRegressor()
+    clf1 = RandomForestRegressor()
 elif options.clf == "AdaBoost":
-    clf = AdaBoostRegressor(n_estimators=100)
+    clf1 = AdaBoostRegressor(n_estimators=100)
 elif options.clf == "XGBoost":
-    clf = XGBRegressor()
+    clf1 = XGBRegressor()
 elif options.clf == "KNN":
-    clf = KNeighborsRegressor(n_neighbors=5)
+    clf1 = KNeighborsRegressor(n_neighbors=5)
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
-    clf = GaussianProcessRegressor(kernel=kernel, random_state=0)
+    clf1 = GaussianProcessRegressor(kernel=kernel, random_state=0)
 elif options.clf == "Ridge":
-    clf = KernelRidge(alpha=2.3)
+    clf1 = KernelRidge(alpha=2.3)
 elif options.clf == 'gradboost':
-    clf = GradientBoostingRegressor()
+    clf1 = GradientBoostingRegressor()
 else:
     raise IOError("Please select a valid clf!")
 
 # perform kfold cross-validation with k=5
 kf = KFold(n_splits=5)
 
+# clf2 = BaggingRegressor(base_estimator=clf1,n_estimators=30,n_jobs=-1)
+clf2 = VotingRegressor(estimators=[('svr',SVR()),('ridge',KernelRidge(
+    alpha=2.3))])
 mse = []
 
 for train_index, test_index in kf.split(humor):
     X_train,X_test = feats[train_index], feats[test_index]
     y_train,y_test = humor[train_index],humor[test_index]
-    clf.fit(X_train, y_train)
-    pred = clf.predict(X_test)
+    clf2.fit(X_train, y_train)
+    pred = clf2.predict(X_test)
     mse.append(mean_squared_error(y_test, pred))
 
 print("MSE: ",np.mean(mse))
 print("RMSE: ",np.sqrt(np.mean(mse)))
 
 if options.clf == 'GaussianProc':
-    clf = GaussianProcessRegressor()
+    clf1 = GaussianProcessRegressor()
 elif options.clf == "SVR":
-    clf = SVR()
+    clf1 = SVR()
 elif options.clf == "LinearSVR":
-    clf = LinearSVR(max_iter=10000)
+    clf1 = LinearSVR(max_iter=10000)
 elif options.clf == "DecisionTree":
-    clf = DecisionTreeRegressor()
+    clf1 = DecisionTreeRegressor()
 elif options.clf == "RandomForest":
-    clf = RandomForestRegressor()
+    clf1 = RandomForestRegressor()
 elif options.clf == "AdaBoost":
-    clf = AdaBoostRegressor(n_estimators=100)
+    clf1 = AdaBoostRegressor(n_estimators=100)
 elif options.clf == "XGBoost":
-    clf = XGBRegressor()
+    clf1 = XGBRegressor()
 elif options.clf == "KNN":
-    clf = KNeighborsRegressor(n_neighbors=5)
+    clf1 = KNeighborsRegressor(n_neighbors=5)
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
-    clf = GaussianProcessRegressor(kernel=kernel, random_state=0)
+    clf1 = GaussianProcessRegressor(kernel=kernel, random_state=0)
 elif options.clf == "Ridge":
-    clf = KernelRidge(alpha=2.3)
+    clf1 = KernelRidge(alpha=2.3)
 elif options.clf == 'gradboost':
-    clf = GradientBoostingRegressor()
+    clf1 = GradientBoostingRegressor()
 else:
     raise IOError("Please select a valid clf!")
 
-clf.fit(feats,humor)
+clf2.fit(feats,humor)
 if not os.path.exists(options.ckpt):
     os.makedirs(options.ckpt)
-pickle.dump(clf, open(os.path.join(options.ckpt,"{}.pth".format(options.clf)),
+pickle.dump(clf2, open(os.path.join(options.ckpt,"bagging_{}.pth".format(
+    options.clf)),
                    "wb"))
