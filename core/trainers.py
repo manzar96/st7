@@ -369,3 +369,54 @@ class BertTrainerTask72(BertTrainer):
             avg_val_loss = avg_val_loss / len(val_loader)
 
             return avg_val_loss, metrics_dict
+
+
+class BertTrainerTask73(BertTrainer):
+    def train_step(self, batch):
+        self.model.train()
+        self.optimizer.zero_grad()
+
+        inputs = to_device(batch[0], device=self.device)
+        inputs_att = to_device(batch[1], device=self.device)
+        targets = to_device(batch[3], device=self.device)
+        outputs = self.model(input_ids=inputs,
+                             attention_mask=inputs_att)
+
+        loss = self.criterion(outputs, targets)
+        # print(loss)
+        return loss
+
+    def calc_val_loss(self, val_loader):
+
+        self.model.eval()
+        with torch.no_grad():
+            avg_val_loss = 0
+            f1=[]
+            acc=[]
+            metrics_dict={}
+            for index, batch in enumerate(tqdm(val_loader)):
+                inputs = to_device(batch[0], device=self.device)
+                inputs_att = to_device(batch[1], device=self.device)
+                targets = to_device(batch[3], device=self.device)
+                outputs = self.model(input_ids=inputs,
+                                     attention_mask=inputs_att)
+
+                loss = self.criterion(outputs, targets)
+                avg_val_loss += loss.item()
+                if 'f1-score' in self.metrics:
+                    preds = torch.argmax(outputs, dim=1)
+                    true = copy.deepcopy(targets)
+                    f1.append(sklearn.metrics.f1_score(true.cpu().numpy(),
+                                                  preds.cpu().numpy()))
+                if 'accuracy' in self.metrics:
+                    preds = torch.argmax(outputs, dim=1)
+                    true = copy.deepcopy(targets)
+                    acc.append(sklearn.metrics.accuracy_score(true.cpu(
+                    ).numpy(), preds.cpu().numpy()))
+
+            avg_val_loss = avg_val_loss / len(val_loader)
+            if 'f1-score' in self.metrics:
+                metrics_dict['f1-score'] = np.mean(f1)
+            if 'accuracy' in self.metrics:
+                metrics_dict['accuracy'] = np.mean(acc)
+            return avg_val_loss, metrics_dict
