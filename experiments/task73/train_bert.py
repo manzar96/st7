@@ -63,9 +63,9 @@ print('Trainable Parameters: {}'.format(train_numparams))
 optimizer = Adam(
     [p for p in model.parameters() if p.requires_grad],
     lr=options.lr, weight_decay=1e-6)
-# criterion = nn.CrossEntropyLoss(ignore_index=-100)
-criterion = nn.BCELoss()
-metrics = ['f1-score','accuracy']
+criterion = nn.CrossEntropyLoss(ignore_index=-100)
+# criterion = nn.BCELoss()
+metrics = ['f1-score','accuracy','recall','precision']
 import ipdb;ipdb.set_trace()
 
 # create trainer

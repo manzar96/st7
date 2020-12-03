@@ -381,7 +381,6 @@ class BertTrainerTask73(BertTrainer):
         targets = to_device(batch[3], device=self.device)
         outputs = self.model(input_ids=inputs,
                              attention_mask=inputs_att)
-        outputs = outputs.squeeze(1)
         loss = self.criterion(outputs, targets)
         # print(loss)
         return loss
@@ -402,7 +401,6 @@ class BertTrainerTask73(BertTrainer):
                 targets = to_device(batch[3], device=self.device)
                 outputs = self.model(input_ids=inputs,
                                      attention_mask=inputs_att)
-                outputs = outputs.squeeze(1)
                 loss = self.criterion(outputs, targets)
                 avg_val_loss += loss.item()
                 if 'f1-score' in self.metrics:
