@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader
-from transformers import BertTokenizer, BertModel
+from transformers import RobertaTokenizer, RobertaModel
 
 from core.data.dataset import Task723Dataset
 from core.data.collators import Task723Collator
@@ -20,7 +20,7 @@ parser = get_train_parser()
 options = parser.parse_args()
 
 # make transforms using only bert tokenizer!
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
 # CLS token will work as BOS token
 # tokenizer.bos_token = tokenizer.cls_token
 # SEP token will work as EOS token
@@ -41,13 +41,13 @@ val_loader = DataLoader(val_dataset, batch_size=options.batch_size,
                         collate_fn=collator_fn)
 
 # create model
-encoder = BertModel.from_pretrained('bert-base-uncased')
+encoder = RobertaModel.from_pretrained('roberta-base')
 
 # change config if you want
 # encoder.config.output_hidden_states = True
 model = BertClassificationHead(encoder, encoder.config.hidden_size,
                                act='sigmoid',
-                               num_classes=1, drop=0.2)
+                               num_classes=2, drop=0.2)
 if options.modelckpt is not None:
     state_dict = torch.load(options.modelckpt,map_location='cpu')
     model.load_state_dict(state_dict)
@@ -63,8 +63,7 @@ print('Trainable Parameters: {}'.format(train_numparams))
 optimizer = Adam(
     [p for p in model.parameters() if p.requires_grad],
     lr=options.lr, weight_decay=1e-6)
-# criterion = nn.CrossEntropyLoss(ignore_index=-100)
-criterion = nn.BCELoss()
+criterion = nn.CrossEntropyLoss(ignore_index=-100)
 metrics = ['f1-score','accuracy']
 import ipdb;ipdb.set_trace()
 
