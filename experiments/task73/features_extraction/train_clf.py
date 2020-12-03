@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from core.utils.parser import get_feat_parser
 
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 from sklearn.model_selection import KFold
 from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -65,6 +65,8 @@ kf = KFold(n_splits=5)
 
 f1 = []
 acc = []
+recall = []
+precision = []
 for train_index, test_index in kf.split(humor):
     X_train,X_test = feats[train_index], feats[test_index]
     y_train,y_test = humor[train_index],humor[test_index]
@@ -72,9 +74,13 @@ for train_index, test_index in kf.split(humor):
     pred = clf.predict(X_test)
     f1.append(f1_score(y_test, pred))
     acc.append(accuracy_score(y_test, pred))
+    recall.append(recall_score(y_test, pred))
+    precision.append(precision_score(y_test, pred))
 
 print("F1-score: ",np.mean(f1))
 print("Accuracy score: ",np.mean(acc))
+print("Recall score: ",np.mean(recall))
+print("Precision score: ",np.mean(precision))
 
 if options.clf == 'GaussianProc':
     clf = GaussianProcessClassifier()
