@@ -15,8 +15,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBClassifier
-
-
+from EvoDAG.model import EvoDAG,EvoDAGE
+# from EvoMSA.base import EvoMSA
 parser = get_feat_parser()
 options = parser.parse_args()
 
@@ -57,6 +57,12 @@ elif options.clf == "GaussianNB":
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+elif options.clf == "EvoDAGE":
+    clf = EvoDAGE(n_estimators=30, n_jobs=4)
+elif options.clf == "EvoDAG":
+    clf = EvoDAG()
+# elif options.clf == "EvoMSA":
+#     clf = EvoMSa(Emo=True, lang='es')
 else:
     raise IOError("Please select a valid clf!")
 
@@ -97,6 +103,12 @@ elif options.clf == "GaussianNB":
 elif options.clf == "RBF":
     kernel = 1.0 * RBF(1.0)
     clf = GaussianProcessClassifier(kernel=kernel, random_state=0)
+elif options.clf == "EvoDAGE":
+    clf = EvoDAGE(n_estimators=30, n_jobs=4)
+elif options.clf == "EvoDAG":
+    clf = EvoDAG()
+# elif options.clf == "EvoMSA":
+#     clf = EvoMSa(Emo=True, lang='es')
 else:
     raise IOError("Please select a valid clf!")
 
