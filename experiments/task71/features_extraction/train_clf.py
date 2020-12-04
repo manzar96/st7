@@ -15,7 +15,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBClassifier
-from EvoDAG.model import EvoDAG,EvoDAGE
+# from EvoDAG.model import EvoDAG,EvoDAGE
 # from EvoMSA.base import EvoMSA
 parser = get_feat_parser()
 options = parser.parse_args()
