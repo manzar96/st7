@@ -182,3 +182,80 @@ class Task723CollatorFeatures(object):
         humor_rating = mktensor(humor_rating, dtype=torch.float)
         humor_contr = mktensor(humor_contr, dtype=torch.long)
         return myid, padded_inputs,inputs_pad_mask, humor_rating, humor_contr
+
+
+class Task74Collator(object):
+    def __init__(self, pad_indx=0, device='cpu'):
+        self.pad_indx = pad_indx
+        self.device = device
+
+    def __call__(self, batch):
+        myid, text_input, off = map(list, zip(*batch))
+
+        input_lengths = torch.tensor(
+            [len(s) for s in text_input], device=self.device)
+
+        # attention mask
+        max_length = max(input_lengths)
+        inputs_pad_mask = pad_mask(input_lengths, max_length=max_length,
+                                   device=self.device)
+        # Pad inputs and targets
+        padded_inputs = (
+            pad_sequence(text_input, batch_first=True,
+                         padding_value=self.pad_indx)
+                .to(self.device))
+
+        off = mktensor(off, dtype=torch.float)
+
+        return padded_inputs,inputs_pad_mask, off
+
+
+class Task74CollatorTest(object):
+    def __init__(self, pad_indx=0, device='cpu'):
+        self.pad_indx = pad_indx
+        self.device = device
+
+    def __call__(self, batch):
+        myid, text_input, off = map(list, zip(*batch))
+
+        input_lengths = torch.tensor(
+            [len(s) for s in text_input], device=self.device)
+
+        # attention mask
+        max_length = max(input_lengths)
+        inputs_pad_mask = pad_mask(input_lengths, max_length=max_length,
+                                   device=self.device)
+        # Pad inputs and targets
+        padded_inputs = (
+            pad_sequence(text_input, batch_first=True,
+                         padding_value=self.pad_indx)
+                .to(self.device))
+
+        return myid, padded_inputs, inputs_pad_mask
+
+
+class Task74CollatorFeatures(object):
+    def __init__(self, pad_indx=0, device='cpu'):
+        self.pad_indx = pad_indx
+        self.device = device
+
+    def __call__(self, batch):
+        myid, text_input, off = map(list, zip(*batch))
+
+        input_lengths = torch.tensor(
+            [len(s) for s in text_input], device=self.device)
+
+        # attention mask
+        max_length = max(input_lengths)
+        inputs_pad_mask = pad_mask(input_lengths, max_length=max_length,
+                                   device=self.device)
+        # Pad inputs and targets
+        padded_inputs = (
+            pad_sequence(text_input, batch_first=True,
+                         padding_value=self.pad_indx)
+                .to(self.device))
+
+        off = mktensor(off, dtype=torch.float)
+
+
+        return myid, padded_inputs, inputs_pad_mask,off
