@@ -4,15 +4,23 @@ from sklearn.model_selection import train_test_split
 import sklearn
 from sklearn.metrics import f1_score
 from EvoDAG.model import EvoDAGE
-
+from EvoMSA.base import EvoMSA
 from sklearn.datasets import load_iris
 
 # Reading data
 data = load_iris()
-X = data.data
-y = data.target
+X1 = data.data
+y1 = data.target
 
-clf = EvoDAGE(n_estimators=30, n_jobs=4).fit(X, y)
+from EvoMSA import base
+from microtc.utils import tweet_iterator
+import os
+tweets = os.path.join(os.path.dirname(base.__file__), 'tests', 'tweets.json')
+D = list(tweet_iterator(tweets))
+X = [x['text'] for x in D]
+y = [x['klass'] for x in D]
+import ipdb;ipdb.set_trace()
+clf = EvoMSA(HA=True, lang='en').fit(X, y)
 
 clf.fit(X,y)
 
