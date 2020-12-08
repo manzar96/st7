@@ -146,6 +146,12 @@ def get_feat_test_parser():
         help="Features pickle to be loaded.",
     )
 
+    parser.add_argument(
+        "--pcackpt",
+        type=str,
+        help="Pca pickle to be loaded.",
+    )
+
     # parser.add_argument(
     #     "--clf",
     #     type=str,

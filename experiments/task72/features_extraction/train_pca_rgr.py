@@ -70,12 +70,15 @@ else:
     raise IOError("Please select a valid clf!")
 
 # perform kfold cross-validation with k=5
-kf = KFold(n_splits=5)
+kf = KFold(n_splits=2)
+pca = PCA(n_components=2)
 
 mse = []
 
 for train_index, test_index in kf.split(humor):
     X_train,X_test = feats[train_index], feats[test_index]
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
     y_train,y_test = humor[train_index],humor[test_index]
     clf.fit(X_train, y_train)
     pred = clf.predict(X_test)
@@ -114,8 +117,12 @@ elif options.clf == 'lasso':
 else:
     raise IOError("Please select a valid clf!")
 
+pca = PCA(n_components=2)
+feats = pca.fit_transform(feats)
+
 clf.fit(feats,humor)
 if not os.path.exists(options.ckpt):
     os.makedirs(options.ckpt)
 pickle.dump(clf, open(os.path.join(options.ckpt,"{}.pth".format(options.clf)),
                    "wb"))
+pickle.dump(pca, open(os.path.join(options.ckpt,"pca.pkl"),"wb"))
