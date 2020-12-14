@@ -18,7 +18,7 @@ class Task7DatasetNegativeSampling(Dataset):
 
         self.data = self.read_data()
 
-        self.data = self.negative_sampling()
+        self.data = self.positive_negative_sampling()
 
         self.transforms = []
 
@@ -36,7 +36,7 @@ class Task7DatasetNegativeSampling(Dataset):
 
         return data
 
-    def negative_sampling(self):
+    def positive_negative_sampling(self):
         # split data to humorous and non-humorous
         humor_data = []
         no_humor_data = []
@@ -46,16 +46,20 @@ class Task7DatasetNegativeSampling(Dataset):
             else:
                 no_humor_data.append(sample)
 
+        data_humor = []
+        data_no_humor = []
         # negative random sampling for humor data and augment humor data
-        for index,sample in enumerate(humor_data):
+        for sample in humor_data:
             neg_samples = random.sample(no_humor_data, 5)
-            humor_data[index] = [sample, neg_samples]
+            pos_samples = random.sample(humor_data, 5)
+            data_humor.append([sample, pos_samples, neg_samples])
 
-        for index,sample in enumerate(no_humor_data):
+        for sample in no_humor_data:
             neg_samples = random.sample(humor_data, 5)
-            no_humor_data[index] = [sample, neg_samples]
+            pos_samples = random.sample(no_humor_data, 5)
+            data_humor.append([sample, pos_samples, neg_samples])
 
-        data = humor_data + no_humor_data
+        data = data_humor + data_no_humor
         random.shuffle(data)
         return data
 
@@ -63,31 +67,31 @@ class Task7DatasetNegativeSampling(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        if self.splitname == 'train':
-            myid, text, is_humor, humor_rating, humor_controversy, offense_rating\
-                = \
-                self.data[index]
-            sample,neg_samples = self.data[index]
+        sample, pos_samples, neg_samples = self.data[index]
+        myid, text, is_humor, humor_rating, humor_controversy, \
+        offense_rating = sample
 
-
-        else:
-            myid, text = self.data[index]
-            is_humor = None
         if not self.transforms:
             text = self.tokenizer(text)
             text = mktensor(text['input_ids'], dtype=torch.long)
+            pos = [self.tokenizer(item[1]) for item in pos_samples]
+            pos = [mktensor(item['input_ids'],dtype=torch.long) for item in
+                   pos]
+            neg = [self.tokenizer(item[1]) for item in neg_samples]
+            neg = [mktensor(item['input_ids'],dtype=torch.long) for
+                           item in neg]
+
         else:
             for t in self.transforms:
                 text = t(text)
 
-
         myid = int(myid)
-        if self.splitname == 'train':
-            is_humor = int(is_humor)
+        is_humor = int(is_humor)
         # humor_rating = float(humor_rating)
         # humor_controversy = int(humor_controversy)
         # offense_rating = float(offense_rating)
-        return myid, text, is_humor
+        return myid, text, is_humor, pos, neg
+
 
 class Task71Dataset(Dataset):
 
