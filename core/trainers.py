@@ -480,8 +480,6 @@ class BertTrainerTask73Multitask:
                              attention_mask=inputs_att)
         loss1 = self.criterion1(outputs1, humor_rating)
         loss2 = self.criterion2(outputs2,humor_contr)
-        print(loss1)
-        print(loss2)
         return loss1,loss2
 
 
