@@ -446,7 +446,7 @@ class BertTrainerTask73Multitask:
                  multitask2=1.0,
                  checkpoint_with=None,
                  checkpoint_max=False,
-                 metrics=None,
+                 metrics=[],
                  scheduler=None,
                  checkpoint_dir=None,
                  clip=None,
