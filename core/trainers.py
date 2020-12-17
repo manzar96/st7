@@ -478,6 +478,7 @@ class BertTrainerTask73Multitask:
         humor_contr = to_device(batch[3], device=self.device)
         outputs1,outputs2 = self.model(input_ids=inputs,
                              attention_mask=inputs_att)
+        outputs1 = outputs1.squeeze(1)
         loss1 = self.criterion1(outputs1, humor_rating)
         loss2 = self.criterion2(outputs2,humor_contr)
         return loss1,loss2
@@ -501,6 +502,7 @@ class BertTrainerTask73Multitask:
                 humor_contr = to_device(batch[3], device=self.device)
                 outputs1,outputs2 = self.model(input_ids=inputs,
                                      attention_mask=inputs_att)
+                outputs1 = outputs1.squeeze(1)
                 loss1 = self.criterion1(outputs1, humor_rating)
                 loss2 = self.criterion2(outputs2, humor_contr)
                 loss = self.multitask1*loss1+self.multitask2*loss2
