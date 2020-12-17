@@ -64,19 +64,23 @@ optimizer = Adam(
     lr=options.lr, weight_decay=1e-6)
 criterion1 = nn.MSELoss()
 criterion2 = nn.CrossEntropyLoss()
+metrics = ['f1-score','accuracy','recall','precision']
+
 import ipdb;ipdb.set_trace()
 
 # create trainer
 
 trainer = BertTrainerTask73Multitask(model=model, optimizer=optimizer,
-                          criterion1=criterion1,
-                          criterion2=criterion2,
+                                     criterion1=criterion1,
+                                     criterion2=criterion2,
                                      multitask1=options.multitask1,
                                      multitask2=options.multitask2,
-
-                      checkpoint_max=False,
-                      checkpoint_with=None,
-                      patience=5, scheduler=None,
-                      checkpoint_dir=options.ckpt, device=DEVICE)
+                                     metrics=metrics,
+                                     checkpoint_max=True,
+                                     checkpoint_with='f1-score',
+                                     patience=5,
+                                     scheduler=None,
+                                     checkpoint_dir=options.ckpt,
+                                     device=DEVICE)
 # train model
 trainer.fit(train_loader, val_loader, epochs=options.epochs)
