@@ -15,6 +15,12 @@ def get_train_parser():
         "-lr", type=float, default=0.01, help="learning rate used"
     )
     parser.add_argument(
+        "--multitask1", type=float, default=1.0, help="weight loss1"
+    )
+    parser.add_argument(
+        "--multitask2", type=float, default=1.0, help="weight loss2"
+    )
+    parser.add_argument(
         "--modelckpt",
         type=str,
         help="Checkpoint to load pretrained model",
