@@ -20,6 +20,13 @@ def get_train_parser():
         help="Checkpoint to load pretrained model",
     )
 
+    parser.add_argument(
+        "--method",
+        type=str,
+        default=None,
+        help="Method used for sentence embedding in bert/roberta models",
+    )
+
 
     parser.add_argument(
         "--ckpt",
