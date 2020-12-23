@@ -73,7 +73,7 @@ class BertClassificationHead(nn.Module):
 
         if self.method is not None:
             # we need to apply pooling over time (by using mean or another
-            # method)!!
+            # method e.g. take last timestep)!!
             pulled_output = torch.mean(output, dim=1)
 
         out = self.clf(pulled_output)
