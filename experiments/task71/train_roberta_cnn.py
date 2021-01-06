@@ -48,7 +48,8 @@ encoder = RobertaModel.from_pretrained('roberta-base')
 # change config if you want
 encoder.config.output_hidden_states = True
 model = BertCNNHead(encoder, encoder.config.hidden_size,
-                               num_classes=2, drop=0.2, method=options.method)
+                               num_classes=2, drop=0.2,
+                    drop_cnn=0.3, method=options.method)
 if options.modelckpt is not None:
     state_dict = torch.load(options.modelckpt, map_location='cpu')
     model.load_state_dict(state_dict)
