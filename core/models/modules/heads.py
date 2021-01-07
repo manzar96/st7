@@ -68,8 +68,7 @@ class BertClassificationHead(nn.Module):
             # concatenate the last 4 layers
             last4 = hidden_states[-4:]
             output = torch.cat((last4[0], last4[1], last4[2], last4[3]), dim=-1)
-        else:
-            raise NotImplementedError
+
 
         if self.method is not None:
             # we need to apply pooling over time (by using mean or another
