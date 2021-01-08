@@ -7,7 +7,7 @@ from transformers import RobertaTokenizer,RobertaModel
 
 from core.data.dataset import Task71Dataset
 from core.data.collators import Task71aCollatorTest
-from core.models.modules.heads import BertClassificationHead
+from core.models.bertcnn import BertCNNHead
 from core.utils.parser import get_test_parser
 from core.utils.tensors import to_device
 
@@ -67,9 +67,9 @@ test_loader = DataLoader(test_dataset, batch_size=options.batch_size,
 # create model
 encoder = RobertaModel.from_pretrained('roberta-base')
 encoder.config.output_hidden_states = True
-model = BertClassificationHead(encoder, encoder.config.hidden_size,
+model = BertCNNHead(encoder, encoder.config.hidden_size,
                                num_classes=2, drop=0.2,
-                               method=options.method, fusion=options.fusion)
+                    drop_cnn=0.3, method=options.method)
 
 
 if options.modelckpt is not None:

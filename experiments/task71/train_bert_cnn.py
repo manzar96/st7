@@ -9,7 +9,7 @@ from transformers import BertTokenizer, BertModel
 from core.data.dataset import Task71Dataset
 from core.data.collators import Task71aCollator
 from core.models.modules.heads import ClassificationHead
-from core.models.bertcnn import BertCNN
+from core.models.bertcnn import BertCNNHead
 from core.trainers import BertTrainer
 from core.utils.parser import get_train_parser
 
@@ -45,19 +45,18 @@ val_loader = DataLoader(val_dataset, batch_size=options.batch_size,
 
 # create model
 if options.modelckpt is not None:
-    model = BertModel.from_pretrained(options.modelckpt)
+    encoder = BertModel.from_pretrained(options.modelckpt)
 else:
-    model = BertModel.from_pretrained('bert-base-uncased')
+    encoder = BertModel.from_pretrained('bert-base-uncased')
 
 # change config if you want
-# model.config.output_hidden_states = True
-
-model = BertCNN(model)
-model = ClassificationHead(encoder=ClassificationHead(model,
-                                                      encoded_features=1344,
-                                                      num_classes=256,
-                                                      drop=0.2),
-                           encoded_features=256, num_classes=2, drop=0.2)
+encoder.config.output_hidden_states = True
+model = BertCNNHead(encoder, encoder.config.hidden_size,
+                               num_classes=2, drop=0.2,
+                    drop_cnn=0.3, method=options.method)
+if options.modelckpt is not None:
+    state_dict = torch.load(options.modelckpt, map_location='cpu')
+    model.load_state_dict(state_dict)
 
 model.to(DEVICE)
 

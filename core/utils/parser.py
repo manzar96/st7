@@ -27,6 +27,13 @@ def get_train_parser():
         help="Method used for sentence embedding in bert/roberta models",
     )
 
+    parser.add_argument(
+        "--fusion",
+        type=str,
+        default=None,
+        help="Fusion used for sentence embedding in bert/roberta models",
+    )
+
 
     parser.add_argument(
         "--ckpt",
@@ -64,6 +71,19 @@ def get_test_parser():
         type=str,
         required=True,
         help="Folder where the generated answers while be stored.",
+    )
+    parser.add_argument(
+        "--method",
+        type=str,
+        default=None,
+        help="Method used for sentence embedding in bert/roberta models",
+    )
+
+    parser.add_argument(
+        "--fusion",
+        type=str,
+        default=None,
+        help="Fusion used for sentence embedding in bert/roberta models",
     )
 
     parser.add_argument(

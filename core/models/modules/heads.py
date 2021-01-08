@@ -26,10 +26,11 @@ class ClassificationHead(nn.Module):
 
 class BertClassificationHead(nn.Module):
     def __init__(self, encoder, encoded_features, num_classes,drop=0,
-                 act='none', method=None):
+                 act='none', method=None, fusion=None):
         super(BertClassificationHead, self).__init__()
         self.encoder = encoder
         self.method = method
+        self.fusion = fusion
         if self.method =='concat4':
             self.clf = nn.Linear(4*encoded_features, num_classes)
         else:
@@ -73,7 +74,17 @@ class BertClassificationHead(nn.Module):
         if self.method is not None:
             # we need to apply pooling over time (by using mean or another
             # method e.g. take last timestep)!!
-            pulled_output = torch.mean(output, dim=1)
+            if self.fusion is None:
+                pulled_output = output[:,0,:] # extract from CLS token
+            elif self.fusion == 'mean':
+                pulled_output = torch.mean(output, dim=1) # mean over all
+                # timesteps
+            elif self.fusion == 'last':
+                batch_size = kwargs['attention_mask'].shape[0]
+                lengths = torch.sum(kwargs['attention_mask'], dim=1,
+                                    dtype=torch.long) - 1
+                pulled_output = output[range(batch_size), lengths] # take
+                # last-padded timestep
 
         out = self.clf(pulled_output)
         if self.act:

@@ -54,11 +54,6 @@ class BertCNNHead(nn.Module):
 
     def forward(self, *args, **kwargs):
         outputs = self.encoder(*args, **kwargs)
-        # here we retrieve the last layer hidden-state of the first token [CLS]
-        # which is used for seq classification (according to docs) but for
-        # the NSP task
-        if self.method is None:
-            pulled_output = outputs[1]
         # another way is to use/handle the hidden states of the layers to
         # extract a sentence representation
         output_embed = outputs[2][0]
