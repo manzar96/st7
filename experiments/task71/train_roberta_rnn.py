@@ -56,7 +56,9 @@ if options.modelckpt is not None:
     model.load_state_dict(state_dict)
 
 model.to(DEVICE)
-
+for p in model.encoder.parameters():
+    if p.requires_grad:
+        p.requires_grad = False
 # params and optimizer
 numparams = sum([p.numel() for p in model.parameters()])
 train_numparams = sum([p.numel() for p in model.parameters() if
